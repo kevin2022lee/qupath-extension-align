@@ -53,6 +53,16 @@
                                         <Button fx:id="rotateRight" mnemonicParsing="false" onAction="#onRotateRightClicked" text="%ImageOverlayAlignmentWindow.rotateRight" />
                               </children>
                            </HBox>
+                           <HBox alignment="CENTER_LEFT" spacing="5.0">
+                              <children>
+                                        <Label text="%ImageOverlayAlignmentWindow.offsetIncrement" />
+                                        <TextField fx:id="offsetIncrement" prefColumnCount="6" />
+                                        <Button fx:id="nudgeLeft" mnemonicParsing="false" onAction="#onNudgeLeftClicked" text="%ImageOverlayAlignmentWindow.nudgeLeft" />
+                                        <Button fx:id="nudgeRight" mnemonicParsing="false" onAction="#onNudgeRightClicked" text="%ImageOverlayAlignmentWindow.nudgeRight" />
+                                        <Button fx:id="nudgeUp" mnemonicParsing="false" onAction="#onNudgeUpClicked" text="%ImageOverlayAlignmentWindow.nudgeUp" />
+                                        <Button fx:id="nudgeDown" mnemonicParsing="false" onAction="#onNudgeDownClicked" text="%ImageOverlayAlignmentWindow.nudgeDown" />
+                              </children>
+                           </HBox>
                         </children>
                      </VBox>
                   </content>

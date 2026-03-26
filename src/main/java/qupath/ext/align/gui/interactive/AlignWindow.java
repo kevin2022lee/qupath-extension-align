@@ -60,6 +60,7 @@ public class AlignWindow extends Stage {
     private static final ResourceBundle resources = Utils.getResources();
     private static final double DEFAULT_OPACITY = 1;
     private static final int DEFAULT_ROTATION_INCREMENT = 1;
+    private static final double DEFAULT_OFFSET_INCREMENT = 10;
     private static final double DEFAULT_PIXEL_SIZE_MICRONS = 20;
     private final ObjectProperty<AffineImageTransform> selectedImageTransform = new SimpleObjectProperty<>();
     private final Map<ImageDataViewer, AffineImageTransform> imageDataAndViewerToTransform;
@@ -80,6 +81,16 @@ public class AlignWindow extends Stage {
     private Button rotateLeft;
     @FXML
     private Button rotateRight;
+    @FXML
+    private TextField offsetIncrement;
+    @FXML
+    private Button nudgeLeft;
+    @FXML
+    private Button nudgeRight;
+    @FXML
+    private Button nudgeUp;
+    @FXML
+    private Button nudgeDown;
     @FXML
     private ComboBox<AutoAligner.TransformationTypes> transformationTypes;
     @FXML
@@ -162,6 +173,13 @@ public class AlignWindow extends Stage {
 
         rotateLeft.disableProperty().bind(inactiveOverlayImageOrViewerImage);
         rotateRight.disableProperty().bind(inactiveOverlayImageOrViewerImage);
+
+        offsetIncrement.setText(String.valueOf(DEFAULT_OFFSET_INCREMENT));
+        offsetIncrement.setTextFormatter(Utils.createFloatFormatter());
+        nudgeLeft.disableProperty().bind(inactiveOverlayImageOrViewerImage);
+        nudgeRight.disableProperty().bind(inactiveOverlayImageOrViewerImage);
+        nudgeUp.disableProperty().bind(inactiveOverlayImageOrViewerImage);
+        nudgeDown.disableProperty().bind(inactiveOverlayImageOrViewerImage);
 
         transformationTypes.getItems().setAll(AutoAligner.TransformationTypes.values());
         transformationTypes.setConverter(new StringConverter<>() {
@@ -374,6 +392,26 @@ public class AlignWindow extends Stage {
     @FXML
     private void onRotateRightClicked(ActionEvent ignored) {
         rotate(-1);
+    }
+
+    @FXML
+    private void onNudgeLeftClicked(ActionEvent ignored) {
+        nudge(-1, 0);
+    }
+
+    @FXML
+    private void onNudgeRightClicked(ActionEvent ignored) {
+        nudge(1, 0);
+    }
+
+    @FXML
+    private void onNudgeUpClicked(ActionEvent ignored) {
+        nudge(0, -1);
+    }
+
+    @FXML
+    private void onNudgeDownClicked(ActionEvent ignored) {
+        nudge(0, 1);
     }
 
     @FXML
@@ -716,5 +754,31 @@ public class AlignWindow extends Stage {
         }
 
         affineImageTransform.rotateTransform(Math.toRadians(theta), viewer.getCenterPixelX(), viewer.getCenterPixelY());
+    }
+
+    private void nudge(int xSign, int ySign) {
+        AffineImageTransform affineImageTransform = selectedImageTransform.get();
+        if (affineImageTransform == null) {
+            logger.error("No current image transform. Cannot nudge transform");
+            return;
+        }
+
+        double offset;
+        try {
+            offset = Double.parseDouble(offsetIncrement.getText());
+        } catch (NumberFormatException e) {
+            logger.error("Cannot parse offset increment {} to a double", offsetIncrement.getText(), e);
+
+            Dialogs.showErrorMessage(
+                    resources.getString("ImageOverlayAlignmentWindow.rotateOverlay"),
+                    MessageFormat.format(
+                            resources.getString("ImageOverlayAlignmentWindow.cannotParseOffset"),
+                            offsetIncrement.getText()
+                    )
+            );
+            return;
+        }
+
+        affineImageTransform.translateTransform(xSign * offset, ySign * offset);
     }
 }

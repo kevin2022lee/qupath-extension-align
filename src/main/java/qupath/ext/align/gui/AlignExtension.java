@@ -43,7 +43,7 @@ public class AlignExtension implements QuPathExtension {
 	private static final Logger logger = LoggerFactory.getLogger(AlignExtension.class);
 	private static final String EXTENSION_NAME = resources.getString("Extension.name");
 	private static final String EXTENSION_DESCRIPTION = resources.getString("Extension.description");
-	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.6.0");
+	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.7.0");
 	private boolean isInstalled = false;
 	
     @Override
